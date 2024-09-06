@@ -12,8 +12,8 @@ from sys import exit as ext
 clr = jsn_dat("eng/dat/clr.json")
 scn = {}
 
-scn["siz"] = (384, 384)
-scn["pix-siz"] = 3
+scn["siz"] = (256, 256)
+scn["pix-siz"] = 4
 
 scn["srf"] = pg.Surface(scn["siz"])
 
@@ -39,23 +39,38 @@ fps_cal["fps-avg"] = 0
 # Daily Alarm
 # View Alarms
 
+hst_clr = clr["red"]
+bck_clr = clr["black"]
+clr_clr = clr["white"]
+
+bts = v_wrk(bck_clr, clr_clr, hst_clr, txt, scn["srf"], scn["siz"])
+
+bts.add_grp("mnu")
+bts.add_grp("mnu-2", False)
+
+bts.add_bts("mnu", (128, 102), "1", (True, True))
+bts.add_bts("mnu", (128, 128), "2", (True, True))
+bts.add_bts("mnu", (128, 154), "142", (True, True))
+
+bts.add_bts("mnu-2", (128, 102), "3", (True, True))
+bts.add_bts("mnu-2", (128, 128), "2", (True, True))
+bts.add_bts("mnu-2", (128, 154), "1", (True, True))
+
 pg.init()
 dpy = pg.display.set_mode(siz, DOUBLEBUF)
 pg.display.set_caption("Alzhe Timer")
-pg.display.set_icon(pg.transform.scale(pg.image.load("eng/icon.png"), (2560, 2560)))
 fps = pg.time.Clock()
 
 mos_dat = {}
 
 mos_dat["xy"] = (pg.mouse.get_pos()[0] // scn["pix-siz"], pg.mouse.get_pos()[1] // scn["pix-siz"])
 mos_dat["btt"] = [False, False, False]
-mos_dat["inc"] = 1
 
 while True:
-    dpy.fill(clr["white"])
-    scn["srf"].fill(clr["white"])
+    dpy.fill(clr_clr)
+    scn["srf"].fill(clr_clr)
 
-    pg.mouse.set_visible(False)
+    # pg.mouse.set_visible(False)
 
     mos_dat["xy"] = (pg.mouse.get_pos()[0] // scn["pix-siz"], pg.mouse.get_pos()[1] // scn["pix-siz"])
 
@@ -74,8 +89,9 @@ while True:
     except:
         fps_cal["fps-avg"] = round(fps_cal["fps"])
 
-    pg.draw.rect(scn["srf"], clr["green"], pg.Rect(scn["siz"][0] / 2, 0, 1, scn["siz"][1]))
-    pg.draw.rect(scn["srf"], clr["green"], pg.Rect(0, scn["siz"][1] / 2, scn["siz"][0], 1))
+    mos_dat["btt"][0] = bts.upt(tme_cal["dlt"], mos_dat["xy"], mos_dat["btt"][0])
+
+    pg.draw.rect(scn["srf"], clr["green"], pg.Rect(mos_dat["xy"][0], mos_dat["xy"][1], 2, 2))
 
     for evt in pg.event.get():
         if evt.type == pg.QUIT:
