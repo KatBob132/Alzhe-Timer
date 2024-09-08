@@ -52,6 +52,8 @@ class v_wrk:
         self.add_bts_id = len(self.v_bts[self.add_bts_grp])
 
         self.add_bts_xy = (int(add_bts_xy[0]), int(add_bts_xy[1]))
+        self.add_bts_org = (int(add_bts_xy[0]), int(add_bts_xy[1]))
+        
         self.add_bts_num = str(add_bts_num)
         self.add_bts_cnr = (bool(add_bts_cnr[0]), bool(add_bts_cnr[1]))
 
@@ -60,7 +62,11 @@ class v_wrk:
         self.v_bts[self.add_bts_grp][self.add_bts_id] = {}
 
         self.v_bts[self.add_bts_grp][self.add_bts_id]["num"] = self.add_bts_num
+
         self.v_bts[self.add_bts_grp][self.add_bts_id]["xy"] = [self.add_bts_xy[0], self.add_bts_xy[1]]
+        self.v_bts[self.add_bts_grp][self.add_bts_id]["org"] = (self.add_bts_org[0], self.add_bts_org[1])
+        self.v_bts[self.add_bts_grp][self.add_bts_id]["cnr"] = (self.add_bts_cnr[0], self.add_bts_cnr[1])
+
         self.v_bts[self.add_bts_grp][self.add_bts_id]["siz"] = (self.add_bts_siz[0] + self.v_siz * 2, self.add_bts_siz[1] + self.v_siz * 2)
         self.v_bts[self.add_bts_grp][self.add_bts_id]["hov"] = 0
         self.v_bts[self.add_bts_grp][self.add_bts_id]["fil"] = self.v_bts[self.add_bts_grp][self.add_bts_id]["siz"][1] + self.v_siz
@@ -74,6 +80,21 @@ class v_wrk:
         self.chg_grp_new = str(chg_grp_new)
         self.v_cur["grp"] = self.chg_grp_new
     
+    def chg_num(self, chg_num_grp, chg_num_id, chg_num_amt):
+        self.chg_num_grp = str(chg_num_grp)
+        self.chg_num_id = int(chg_num_id)
+        self.chg_num_amt = int(chg_num_amt)
+        
+        self.v_bts[self.chg_num_grp][self.chg_num_id]["num"] = str(int(self.v_bts[self.chg_num_grp][self.chg_num_id]["num"]) + self.chg_num_amt)
+        self.chg_num_siz = self.v_lnk.siz(self.v_bts[self.chg_num_grp][self.chg_num_id]["num"], self.v_siz, (0, 1))
+
+        self.v_bts[self.chg_num_grp][self.chg_num_id]["siz"] = (self.chg_num_siz[0] + self.v_siz * 2, self.chg_num_siz[1] + self.v_siz * 2)
+        self.v_bts[self.chg_num_grp][self.chg_num_id]["xy"] = [self.v_bts[self.chg_num_grp][self.chg_num_id]["org"][0], self.v_bts[self.chg_num_grp][self.chg_num_id]["org"][1]]
+
+        for a in range(2):
+            if self.v_bts[self.chg_num_grp][self.chg_num_id]["cnr"][a]:
+                self.v_bts[self.chg_num_grp][self.chg_num_id]["xy"][a] -= int(self.v_bts[self.chg_num_grp][self.chg_num_id]["siz"][a] / 2)
+
     def hov(self, hov_grp, hov_id, hov_mos):
         self.hov_grp = str(hov_grp)
         self.hov_id = int(hov_id)

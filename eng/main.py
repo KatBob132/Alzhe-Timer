@@ -40,8 +40,8 @@ fps_cal["fps-avg"] = 0
 # View Alarms
 
 hst_clr = clr["red"]
-bck_clr = clr["black"]
-clr_clr = clr["white"]
+bck_clr = clr["white"]
+clr_clr = clr["black"]
 
 bts = v_wrk(bck_clr, clr_clr, hst_clr, txt, scn["srf"], scn["siz"])
 
@@ -50,11 +50,11 @@ bts.add_grp("mnu-2", False)
 
 bts.add_bts("mnu", (128, 102), "1", (True, True))
 bts.add_bts("mnu", (128, 128), "2", (True, True))
-bts.add_bts("mnu", (128, 154), "142", (True, True))
+bts.add_bts("mnu", (128, 154), "3", (True, True))
 
-bts.add_bts("mnu-2", (128, 102), "3", (True, True))
+bts.add_bts("mnu-2", (128, 102), "1", (True, True))
 bts.add_bts("mnu-2", (128, 128), "2", (True, True))
-bts.add_bts("mnu-2", (128, 154), "1", (True, True))
+bts.add_bts("mnu-2", (128, 154), "x", (True, True))
 
 pg.init()
 dpy = pg.display.set_mode(siz, DOUBLEBUF)
@@ -90,6 +90,25 @@ while True:
         fps_cal["fps-avg"] = round(fps_cal["fps"])
 
     mos_dat["btt"][0] = bts.upt(tme_cal["dlt"], mos_dat["xy"], mos_dat["btt"][0])
+
+    match bts.v_mos["grp"]:
+        case "mnu":
+            match bts.v_mos["id"]:
+                case 0:
+                    bts.chg_grp("mnu-2")
+                case 1:
+                    pass
+                case 2:
+                    pass
+
+        case "mnu-2":
+            match bts.v_mos["id"]:
+                case 0:
+                    bts.chg_num("mnu-2", 0, 1)
+                case 1:
+                    bts.chg_grp("mnu")
+                case 2:
+                    bts.chg_grp("mnu")
 
     pg.draw.rect(scn["srf"], clr["green"], pg.Rect(mos_dat["xy"][0], mos_dat["xy"][1], 2, 2))
 
