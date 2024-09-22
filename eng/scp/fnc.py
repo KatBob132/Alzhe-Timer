@@ -14,6 +14,24 @@ def clp(num, min=None, max=None):
     
     return num
 
+def clp_whl(num, max, zer=False):
+    while num > max or num < 0:
+        if num > max:
+            num -= max
+
+            if zer:
+                num -= 1
+        else:
+            num += max
+    
+    return num
+
+def min(num):
+    return clp_whl(num, 59, True)
+
+def hur_mon(num):
+    return clp_whl(num, 12)
+
 # data
 
 def jsn_dat(loc):
