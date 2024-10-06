@@ -14,23 +14,20 @@ def clp(num, min=None, max=None):
     
     return num
 
-def clp_whl(num, max, zer=False):
-    while num > max or num < 0:
-        if num > max:
-            num -= max
+def lrp(sar, end, val, dlt, inc):
+    sar = float(sar)
+    end = float(end)
 
-            if zer:
-                num -= 1
-        else:
-            num += max
+    val = float(val)
+    dlt = float(dlt)
+    inc = float(inc)
+
+    if abs(end - sar) <= inc:
+        sar = end
+    else:
+        sar += (end - sar) / (val / dlt)
     
-    return num
-
-def min(num):
-    return clp_whl(num, 59, True)
-
-def hur_mon(num):
-    return clp_whl(num, 12)
+    return sar
 
 # data
 
