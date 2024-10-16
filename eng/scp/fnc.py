@@ -14,6 +14,15 @@ def clp(num, min=None, max=None):
     
     return num
 
+def whl(num, max, zer=False):
+    while num > max:
+        num -= max
+
+        if zer:
+            num -= 1
+    
+    return num
+
 def lrp(sar, end, val, dlt, inc):
     sar = float(sar)
     end = float(end)
