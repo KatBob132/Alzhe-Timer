@@ -2,6 +2,9 @@ from pynput.keyboard import Listener as lst
 from pyautogui import click as clk
 from time import sleep as sp
 from sys import exit as ext
+import pyautogui as pag
+
+pag.FAILSAFE = False
 
 clk_ing = False
 prs = set()
@@ -31,5 +34,5 @@ while True:
     
     if clk_ing:
         clk()
-    
+
     sp(0.01)

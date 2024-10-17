@@ -47,6 +47,7 @@ bck_clr = clr["black"]
 cer_clr = clr["white"]
 
 ret = None
+tmr = jsn_dat("eng/dat/tmr.json")
 
 dte = {}
 
@@ -54,6 +55,7 @@ dte["now"] = dat.now()
 
 dte["mon"] = dte["now"].month
 dte["day"] = dte["now"].day
+dte["wek"] = dte["now"].weekday()
 dte["yer"] = dte["now"].year
 
 dte["hor"] = dte["now"].hour
@@ -68,11 +70,11 @@ else:
 
 bts = wrk(hst_clr, bck_clr, cer_clr, scn["srf"], txt)
 
-bts.add_grp("mnu")
+bts.add_grp("mnu", True)
 
 bts.add_grp("tht")
 bts.add_grp("tod")
-bts.add_grp("evy", True)
+bts.add_grp("evy")
 bts.add_grp("far")
 
 ### Menu
@@ -92,12 +94,12 @@ bts.add_bts("tht", "Cancel", (scn["siz"][0] // 2, scn["siz"][1] // 2 + 30), (Tru
 
 ### Today
 
-bts.add_bts("tod", "12", (scn["siz"][0] // 2 - 34, scn["siz"][1] // 2 - 43), (True, True))
+bts.add_bts("tod", "12", (scn["siz"][0] // 2 - 36, scn["siz"][1] // 2 - 43), (True, True))
 bts.add_bts("tod", "59", (scn["siz"][0] // 2, scn["siz"][1] // 2 - 43), (True, True))
-bts.add_bts("tod", "AM", (scn["siz"][0] // 2 + 34, scn["siz"][1] // 2 - 43), (True, True))
+bts.add_bts("tod", "AM", (scn["siz"][0] // 2 + 36, scn["siz"][1] // 2 - 43), (True, True))
 
-bts.add_icn("tod", ":", (scn["siz"][0] // 2 - 17, scn["siz"][1] // 2 - 43), (-3, scn["siz"][1] // 2 - 43), (True, True))
-bts.add_icn("tod", ":", (scn["siz"][0] // 2 + 17, scn["siz"][1] // 2 - 43), (scn["siz"][0] + 2, scn["siz"][1] // 2 - 43), (True, True))
+bts.add_icn("tod", ":", (scn["siz"][0] // 2 - 18, scn["siz"][1] // 2 - 43), (-3, scn["siz"][1] // 2 - 43), (True, True))
+bts.add_icn("tod", ":", (scn["siz"][0] // 2 + 18, scn["siz"][1] // 2 - 43), (scn["siz"][0] + 2, scn["siz"][1] // 2 - 43), (True, True))
 
 bts.add_bts("tod", "Note", (scn["siz"][0] // 2, scn["siz"][1] // 2 - 13), (True, True))
 bts.add_bts("tod", "Done", (scn["siz"][0] // 2, scn["siz"][1] // 2 + 17), (True, True))
@@ -123,12 +125,12 @@ bts.add_icn("evy", "FR", (scn["siz"][0] // 2 + 24, scn["siz"][1] // 2 - 28), (-1
 bts.add_icn("evy", "SA", (scn["siz"][0] // 2 + 48, scn["siz"][1] // 2 - 76), (scn["siz"][0] + 14, scn["siz"][1] // 2 - 76), (True, True))
 bts.add_icn("evy", "SU", (scn["siz"][0] // 2 + 72, scn["siz"][1] // 2 - 28), (-13, scn["siz"][1] // 2 - 28), (True, True))
 
-bts.add_bts("evy", "12", (scn["siz"][0] // 2 - 34, scn["siz"][1] // 2), (True, True))
+bts.add_bts("evy", "12", (scn["siz"][0] // 2 - 36, scn["siz"][1] // 2), (True, True))
 bts.add_bts("evy", "59", (scn["siz"][0] // 2, scn["siz"][1] // 2), (True, True))
-bts.add_bts("evy", "AM", (scn["siz"][0] // 2 + 34, scn["siz"][1] // 2), (True, True))
+bts.add_bts("evy", "AM", (scn["siz"][0] // 2 + 36, scn["siz"][1] // 2), (True, True))
 
-bts.add_icn("evy", ":", (scn["siz"][0] // 2 - 17, scn["siz"][1] // 2), (-3, scn["siz"][1] // 2), (True, True))
-bts.add_icn("evy", ":", (scn["siz"][0] // 2 + 17, scn["siz"][1] // 2), (scn["siz"][0] + 2, scn["siz"][1] // 2), (True, True))
+bts.add_icn("evy", ":", (scn["siz"][0] // 2 - 18, scn["siz"][1] // 2), (-3, scn["siz"][1] // 2), (True, True))
+bts.add_icn("evy", ":", (scn["siz"][0] // 2 + 18, scn["siz"][1] // 2), (scn["siz"][0] + 2, scn["siz"][1] // 2), (True, True))
 
 bts.add_bts("evy", "Note", (scn["siz"][0] // 2, scn["siz"][1] // 2 + 30), (True, True))
 bts.add_bts("evy", "Done", (scn["siz"][0] // 2, scn["siz"][1] // 2 + 60), (True, True))
@@ -136,25 +138,27 @@ bts.add_bts("evy", "Cancel", (scn["siz"][0] // 2, scn["siz"][1] // 2 + 90), (Tru
 
 ### Farawau
 
-bts.add_bts("far", "12", (scn["siz"][0] // 2 - 34, scn["siz"][1] // 2 - 60), (True, True))
+bts.add_bts("far", "12", (scn["siz"][0] // 2 - 36, scn["siz"][1] // 2 - 60), (True, True))
 bts.add_bts("far", "12", (scn["siz"][0] // 2, scn["siz"][1] // 2 - 60), (True, True))
-bts.add_bts("far", "9999", (scn["siz"][0] // 2 + 47, scn["siz"][1] // 2 - 60), (True, True))
+bts.add_bts("far", "9999", (scn["siz"][0] // 2 + 49, scn["siz"][1] // 2 - 60), (True, True))
 
-bts.add_icn("far", ":", (scn["siz"][0] // 2 - 17, scn["siz"][1] // 2 - 60), (-3, scn["siz"][1] // 2 - 60), (True, True))
-bts.add_icn("far", ":", (scn["siz"][0] // 2 + 17, scn["siz"][1] // 2 - 60), (scn["siz"][0] + 2, scn["siz"][1] // 2 - 60), (True, True))
+bts.add_icn("far", ":", (scn["siz"][0] // 2 - 18, scn["siz"][1] // 2 - 60), (-3, scn["siz"][1] // 2 - 60), (True, True))
+bts.add_icn("far", ":", (scn["siz"][0] // 2 + 18, scn["siz"][1] // 2 - 60), (scn["siz"][0] + 2, scn["siz"][1] // 2 - 60), (True, True))
 
-bts.add_bts("far", "12", (scn["siz"][0] // 2 - 34, scn["siz"][1] // 2 - 30), (True, True))
+bts.add_bts("far", "12", (scn["siz"][0] // 2 - 36, scn["siz"][1] // 2 - 30), (True, True))
 bts.add_bts("far", "59", (scn["siz"][0] // 2, scn["siz"][1] // 2 - 30), (True, True))
-bts.add_bts("far", "AM", (scn["siz"][0] // 2 + 34, scn["siz"][1] // 2 - 30), (True, True))
+bts.add_bts("far", "AM", (scn["siz"][0] // 2 + 36, scn["siz"][1] // 2 - 30), (True, True))
 
-bts.add_icn("far", ":", (scn["siz"][0] // 2 - 17, scn["siz"][1] // 2 - 30), (-3, scn["siz"][1] // 2 - 30), (True, True))
-bts.add_icn("far", ":", (scn["siz"][0] // 2 + 17, scn["siz"][1] // 2 - 30), (scn["siz"][0] + 2, scn["siz"][1] // 2 - 30), (True, True))
+bts.add_icn("far", ":", (scn["siz"][0] // 2 - 18, scn["siz"][1] // 2 - 30), (-3, scn["siz"][1] // 2 - 30), (True, True))
+bts.add_icn("far", ":", (scn["siz"][0] // 2 + 18, scn["siz"][1] // 2 - 30), (scn["siz"][0] + 2, scn["siz"][1] // 2 - 30), (True, True))
 
 bts.add_bts("far", "Note", (scn["siz"][0] // 2, scn["siz"][1] // 2), (True, True))
 bts.add_bts("far", "Done", (scn["siz"][0] // 2, scn["siz"][1] // 2 + 30), (True, True))
 bts.add_bts("far", "Cancel", (scn["siz"][0] // 2, scn["siz"][1] // 2 + 60), (True, True))
 
 pg.init()
+pg.mixer.init()
+
 dpy = pg.display.set_mode(siz, DOUBLEBUF)
 pg.display.set_caption("Alzhe Timer")
 fps = pg.time.Clock()
@@ -194,6 +198,7 @@ while True:
 
     dte["mon"] = dte["now"].month
     dte["day"] = dte["now"].day
+    dte["wek"] = dte["now"].weekday()
     dte["yer"] = dte["now"].year
 
     dte["hor"] = dte["now"].hour
@@ -210,6 +215,19 @@ while True:
     # pg.draw.rect(scn["srf"], clr["red-dark"], pg.Rect(scn["siz"][0] // 2 + 1, 0, 1, scn["siz"][1]))
     # pg.draw.rect(scn["srf"], clr["red"], pg.Rect(0, scn["siz"][1] // 2, scn["siz"][0], 1))
     # pg.draw.rect(scn["srf"], clr["red-dark"], pg.Rect(0, scn["siz"][1] // 2 + 1, scn["siz"][0], 1))
+
+    for typ in tmr:
+        if typ != "tht":
+            for a in range(len(tmr[typ])):
+                if typ == "tod" and tmr[typ][a]["tme"] == (dte["hor"], dte["min"], dte["per"]):
+                    pg.mixer.music.load("eng/nte/" + tmr[typ][a]["nme"] + ".mp3")
+                    pg.mixer.music.play()
+
+                    tmr[typ].pop(a)
+                if typ == "evy"and tmr[typ][a]["act"][dte["wek"]] and tmr[typ][a]["tme"] == (dte["hor"], dte["min"], dte["per"]):
+                    print(tmr[typ][a]["nte"], typ)
+                if typ == "far" and tmr[typ][a]["dte"] == (dte["mon"], dte["day"], dte["yer"]) and tmr[typ][a]["tme"] == (dte["hor"], dte["min"], dte["per"]):
+                    print(tmr[typ][a]["nte"], typ)
 
     ret = bts.upt(mos_dat["xy"], mos_dat["btt"][0], tme_cal["dlt"])
 
@@ -268,6 +286,8 @@ while True:
                         key["act"] = True
                         key["kys"] = ""
                     case 1:
+                        tmr[ret[0]].append(bts.get_bts(ret[0], 0))
+
                         bts.chg_grp("mnu")
                         key["act"] = False
                     case 2:
@@ -289,6 +309,14 @@ while True:
                         key["act"] = True
                         key["kys"] = ""
                     case 4:
+                        tmr[ret[0]].append({})
+                        
+                        tmr[ret[0]][-1]["tme"] = (int(bts.get_bts(ret[0], 0)), int(bts.get_bts(ret[0], 1)), bts.get_bts(ret[0], 2))
+                        tmr[ret[0]][-1]["nte"] = key["kys"]
+                        tmr[ret[0]][-1]["nme"] = ret[0] + "_" + str(len(tmr[ret[0]]) - 1)
+
+                        spk(tmr[ret[0]][-1]["nte"], tmr[ret[0]][-1]["nme"])
+
                         bts.chg_grp("mnu")
                         key["act"] = False
                     case 5:
@@ -345,6 +373,22 @@ while True:
                         key["act"] = True  
                         key["kys"] = ""
                     case 11:
+                        tmr[ret[0]].append({})
+                        
+                        tmr[ret[0]][-1]["tme"] = (int(bts.get_bts(ret[0], 7)), int(bts.get_bts(ret[0], 8)), bts.get_bts(ret[0], 9))
+                        tmr[ret[0]][-1]["nte"] = key["kys"]
+                        tmr[ret[0]][-1]["nme"] = ret[0] + "_" + str(len(tmr[ret[0]]) - 1)
+
+                        spk(tmr[ret[0]][-1]["nte"], tmr[ret[0]][-1]["nme"])
+                        
+                        tmr[ret[0]][-1]["act"] = []
+
+                        for a in range(7):
+                            if bts.get_bts("evy", a) == "":
+                                tmr[ret[0]][-1]["act"].append(True)
+                            else:
+                                tmr[ret[0]][-1]["act"].append(False)
+                            
                         bts.chg_grp("mnu")
                         key["act"] = False
                     case 12:
@@ -372,6 +416,15 @@ while True:
                         key["act"] = True  
                         key["kys"] = ""
                     case 7:
+                        tmr[ret[0]].append({})
+                        
+                        tmr[ret[0]][-1]["dte"] = (int(bts.get_bts(ret[0], 0)), int(bts.get_bts(ret[0], 1)), int(bts.get_bts(ret[0], 2)))
+                        tmr[ret[0]][-1]["tme"] = (int(bts.get_bts(ret[0], 3)), int(bts.get_bts(ret[0], 4)), bts.get_bts(ret[0], 5))
+                        tmr[ret[0]][-1]["nte"] = key["kys"]
+                        tmr[ret[0]][-1]["nme"] = ret[0] + "_" + str(len(tmr[ret[0]]) - 1)
+
+                        spk(tmr[ret[0]][-1]["nte"], tmr[ret[0]][-1]["nme"])
+
                         bts.chg_grp("mnu")
                         key["act"] = False
                     case 8:
@@ -401,7 +454,7 @@ while True:
         bts.chg_hgh("tod", 3, False)
         bts.chg_hgh("evy", 10, False)
         bts.chg_hgh("far", 6, False)
-    
+
     for evt in pg.event.get():
         if evt.type == pg.QUIT:
             pg.quit()

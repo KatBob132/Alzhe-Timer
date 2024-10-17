@@ -1,4 +1,5 @@
 from json import load as lod
+from gtts import gTTS as gtt
 from random import *
 from math import *
 
@@ -42,6 +43,13 @@ def lrp(sar, end, val, dlt, inc):
 
 def jsn_dat(loc):
     return lod(open(loc))
+
+def spk(txt, fil):
+    txt = str(txt)
+    fil = str(fil)
+
+    voc = gtt(text=txt, lang="en")
+    voc.save("eng/nte/" + fil + ".mp3")
 
 # color
 
