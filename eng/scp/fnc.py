@@ -1,9 +1,13 @@
+from random import randrange as rr
 from json import load as lod
 from gtts import gTTS as gtt
 from random import *
 from math import *
 
 # math
+
+def ran(min, max):
+    return rr(min, max + 1)
 
 def clp(num, min=None, max=None):
     if min != None:
@@ -15,12 +19,18 @@ def clp(num, min=None, max=None):
     
     return num
 
-def whl(num, max, zer=False):
-    while num > max:
-        num -= max
+def whl(num, max, min, zer=False):
+    while num > max or num < min:
+        if num > max:
+            num -= max
 
-        if zer:
-            num -= 1
+            if zer:
+                num -= 1
+        else:
+            if zer:
+                num += max + 1
+            else:
+                num += max
     
     return num
 

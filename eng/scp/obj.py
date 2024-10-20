@@ -53,7 +53,7 @@ class wrk:
 
         self.wrk_cur["cur"] = chg_grp_new
 
-    def add_bts(self, add_bts_grp, add_bts_txt, add_bts_xy, add_bts_cnr=(False, False)):
+    def add_bts(self, add_bts_grp, add_bts_txt, add_bts_xy, add_bts_cnr=(False, False), add_bts_num=False):
         self.add_bts_grp = str(add_bts_grp)
         self.add_bts_id = len(self.wrk_bts[self.add_bts_grp])
 
@@ -71,11 +71,13 @@ class wrk:
                 self.add_bts_xy[a] = round(self.add_bts_xy[a])
 
         self.add_bts_xy[1] -= self.wrk_txt_spc
+        self.add_bts_num = bool(add_bts_num)
 
         self.wrk_bts[self.add_bts_grp][self.add_bts_id] = {}
 
         self.wrk_bts[self.add_bts_grp][self.add_bts_id]["txt"] = self.add_bts_txt
         self.wrk_bts[self.add_bts_grp][self.add_bts_id]["xy"] = self.add_bts_xy
+        self.wrk_bts[self.add_bts_grp][self.add_bts_id]["num"] = self.add_bts_num
         self.wrk_bts[self.add_bts_grp][self.add_bts_id]["siz"] = self.add_bts_siz
         self.wrk_bts[self.add_bts_grp][self.add_bts_id]["cnr"] = self.add_bts_cnr
         self.wrk_bts[self.add_bts_grp][self.add_bts_id]["org"] = self.add_bts_org
@@ -93,6 +95,12 @@ class wrk:
         self.get_bts_id = int(get_bts_id)
 
         return self.wrk_bts[self.get_bts_grp][self.get_bts_id]["txt"]
+    
+    def get_num(self, get_num_grp, get_num_id):
+        self.get_num_grp = str(get_num_grp)
+        self.get_num_id = int(get_num_id)
+        
+        return self.wrk_bts[self.get_num_grp][self.get_num_id]["num"]
 
     def chg_bts(self, chg_bts_grp, chg_bts_id, chg_bts_new):
         self.chg_bts_grp = str(chg_bts_grp)
@@ -113,15 +121,17 @@ class wrk:
         
         self.wrk_bts[self.chg_bts_grp][self.chg_bts_id]["xy"][1] -= self.wrk_txt_spc
 
-    def chg_num(self, chg_num_grp, chg_num_id, chg_num_amt, chg_num_lim=-1, chg_num_zer=False):
+    def chg_num(self, chg_num_grp, chg_num_id, chg_num_amt, chg_num_lim=-1, chg_num_min=0, chg_num_zer=False):
         self.chg_num_grp = chg_num_grp
         self.chg_num_id = chg_num_id
         self.chg_num_amt = int(chg_num_amt)
+
         self.chg_num_lim = int(chg_num_lim)
+        self.chg_num_min = int(chg_num_min)
         self.chg_num_zer = bool(chg_num_zer)
 
         if self.chg_num_lim != -1:
-            self.chg_num_new = str(whl(int(self.wrk_bts[self.chg_num_grp][self.chg_num_id]["txt"]) + self.chg_num_amt, self.chg_num_lim, self.chg_num_zer))
+            self.chg_num_new = str(whl(int(self.wrk_bts[self.chg_num_grp][self.chg_num_id]["txt"]) + self.chg_num_amt, self.chg_num_lim, self.chg_num_min, self.chg_num_zer))
         else:
             self.chg_num_new = str(int(self.wrk_bts[self.chg_num_grp][self.chg_num_id]["txt"]) + self.chg_num_amt)
 
