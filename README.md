@@ -1,0 +1,1 @@
+A app made for the Congressional App Challenge. Alzhe Timer is a app made for patients suffering from dementia; this app would take most of the heavy lifting of memorizing dates, times, and thoughts with this device.
