@@ -35,15 +35,10 @@ tme_cal["dlt"] = 0
 fps_cal["fps"] = 0
 fps_cal["fps-lit"] = []
 fps_cal["fps-avg"] = 0
-
-# Thought >
-# Today >
-# Everyday
-# Faraway >
  
 # View Reminders
 
-hst_clr = clr["red"]
+hst_clr = clr["pink"]
 bck_clr = clr["black"]
 cer_clr = clr["white"]
 
@@ -54,11 +49,23 @@ tmr = jsn_dat("eng/dat/tmr.json")
 tht = {}
 
 tht["lit"] = tmr["tht"]
-tht["cur"] = None
-tht["wnt"] = None
+tht["cur"] = 0
+tht["wnt"] = 0
 
 tht["phs"] = [0, True]
 tht["tmr"] = [0, 3]
+
+viw = {}
+
+viw["scr"] = 0
+viw["spc"] = 0
+viw["siz"] = None
+viw["sld"] = [0, False, False, False]
+viw["del"] = []
+viw["box"] = ((0, 0), (0, 0))
+
+viw["bld-ver"] = [0, 0]
+viw["bld"] = 0
 
 dte = {}
 
@@ -189,11 +196,6 @@ mos_dat["xy"] = (pg.mouse.get_pos()[0] // scn["pix-siz"], pg.mouse.get_pos()[1] 
 mos_dat["btt"] = [False, False, False]
 mos_dat["chg"] = [[], 0]
 
-key = {}
-
-key["act"] = False
-key["kys"] = ""
-
 while True:
     dpy.fill(cer_clr)
     scn["srf"].fill(cer_clr)
@@ -252,21 +254,21 @@ while True:
                 tht["wnt"] = ran(0, len(tht["lit"]) - 1)
             
             if tht["wnt"] != tht["cur"]:
-                tht["phs"][0] = lrp(tht["phs"][0], 1, 0.2, tme_cal["dlt"], 0.0075)
+                tht["phs"][0] = lrp(tht["phs"][0], 1, tot_lrp, tme_cal["dlt"], tot_inc)
                 tht["phs"][1] = False
 
                 if tht["phs"][0] == 1:
                     tht["cur"] = tht["wnt"]
             else:
-                tht["phs"][0] = lrp(tht["phs"][0], 0, 0.2, tme_cal["dlt"], 0.0075)
+                tht["phs"][0] = lrp(tht["phs"][0], 0, tot_lrp, tme_cal["dlt"], tot_inc)
 
                 if tht["phs"][0] == 0:
                     tht["phs"][1] = True
 
-            txt.drw(tht["lit"][tht["cur"]], (scn["siz"][0] // 2, scn["siz"][1] - 15), 20, bld_clr(cer_clr, bck_clr, tht["phs"][0]), (0, 2), bld_clr(hst_clr, bck_clr, tht["phs"][0]), (True, True))
-        else:
-            tht["cur"] = ran(0, len(tht["lit"]) - 1)
-            tht["wnt"] = tht["cur"]
+            try:
+                txt.drw(tht["lit"][tht["cur"]], (scn["siz"][0] // 2, scn["siz"][1] - 15), 20, bld_clr(cer_clr, bck_clr, tht["phs"][0]), (0, 2), bld_clr(hst_clr, bck_clr, tht["phs"][0]), (True, True))
+            except:
+                continue
     
     if bts.wrk_cur["cur"] != "mnu":
         pg.draw.rect(scn["srf"], cer_clr, pg.Rect(0, scn["siz"][1] - 30, scn["siz"][0], 30 * bts.wrk_grp_s["mnu"]["sld"]))
@@ -311,14 +313,10 @@ while True:
             case "mnu":
                 match ret[1]:
                     case 0:
-                        key["kys"] = ""
-                        
                         bts.chg_grp("tht")
 
                         bts.chg_bts("tht", 0, "Thought")
                     case 1:
-                        key["kys"] = ""
-
                         bts.chg_grp("tod")
 
                         bts.chg_bts("tod", 0, dte["hor"])
@@ -326,8 +324,6 @@ while True:
                         bts.chg_bts("tod", 2, dte["per"])
                         bts.chg_bts("tod", 3, "Note")
                     case 2:
-                        key["kys"] = ""
-
                         bts.chg_grp("evy")
 
                         for a in range(7):
@@ -338,8 +334,6 @@ while True:
                         bts.chg_bts("evy", 9, dte["per"])
                         bts.chg_bts("evy", 10, "Note")
                     case 3:
-                        key["kys"] = ""
-
                         bts.chg_grp("far")
 
                         bts.chg_bts("far", 0, dte["mon"])
@@ -350,23 +344,22 @@ while True:
                         bts.chg_bts("far", 5, dte["per"])
                         bts.chg_bts("far", 6, "Note")
                     case 4:
-                        key["kys"] = ""
+                        viw["scr"] = 0
+                        viw["sld"][0] = 0
 
                         bts.chg_grp("viw")
             
             case "tht":
                 match ret[1]:
                     case 0:
-                        key["act"] = True
-                        key["kys"] = ""
+                        bts.chg_bts(ret[0], ret[1], spc())
+                        bts.chg_clk(ret[0], ret[1])
                     case 1:
                         tmr[ret[0]].append(bts.get_bts(ret[0], 0))
 
                         bts.chg_grp("mnu")
-                        key["act"] = False
                     case 2:
                         bts.chg_grp("mnu")
-                        key["act"] = False
             
             case "tod":
                 match ret[1]:
@@ -380,20 +373,18 @@ while True:
                         else:
                             bts.chg_bts(ret[0], ret[1], "AM")
                     case 3:
-                        key["act"] = True
-                        key["kys"] = ""
+                        bts.chg_bts(ret[0], ret[1], spc())
+                        bts.chg_clk(ret[0], ret[1])
                     case 4:
                         tmr[ret[0]].append({})
                         
-                        tmr[ret[0]][-1]["tme"] = (int(bts.get_bts(ret[0], 0)), int(bts.get_bts(ret[0], 1)), bts.get_bts(ret[0], 2))
-                        tmr[ret[0]][-1]["nte"] = key["kys"]
+                        tmr[ret[0]][-1]["tme"] = [int(bts.get_bts(ret[0], 0)), int(bts.get_bts(ret[0], 1)), bts.get_bts(ret[0], 2)]
+                        tmr[ret[0]][-1]["nte"] = bts.get_bts(ret[0], 3)
                         tmr[ret[0]][-1]["nme"] = tmr[ret[0]][-1]["nte"] + "_" + ret[0] + "_" + str(len(tmr[ret[0]]) - 1)
 
                         bts.chg_grp("mnu")
-                        key["act"] = False
                     case 5:
                         bts.chg_grp("mnu")
-                        key["act"] = False
             
             case "evy":
                 match ret[1]:
@@ -442,13 +433,13 @@ while True:
                         else:
                             bts.chg_bts(ret[0], ret[1], "AM")
                     case 10:
-                        key["act"] = True  
-                        key["kys"] = ""
+                        bts.chg_bts(ret[0], ret[1], spc())
+                        bts.chg_clk(ret[0], ret[1])
                     case 11:
                         tmr[ret[0]].append({})
                         
-                        tmr[ret[0]][-1]["tme"] = (int(bts.get_bts(ret[0], 7)), int(bts.get_bts(ret[0], 8)), bts.get_bts(ret[0], 9))
-                        tmr[ret[0]][-1]["nte"] = key["kys"]
+                        tmr[ret[0]][-1]["tme"] = [int(bts.get_bts(ret[0], 7)), int(bts.get_bts(ret[0], 8)), bts.get_bts(ret[0], 9)]
+                        tmr[ret[0]][-1]["nte"] = bts.get_bts(ret[0], 10)
                         tmr[ret[0]][-1]["nme"] = tmr[ret[0]][-1]["nte"] + "_" + ret[0] + "_" + str(len(tmr[ret[0]]) - 1)
                         
                         tmr[ret[0]][-1]["act"] = []
@@ -460,10 +451,8 @@ while True:
                                 tmr[ret[0]][-1]["act"].append(False)
                             
                         bts.chg_grp("mnu")
-                        key["act"] = False
                     case 12:
                         bts.chg_grp("mnu")
-                        key["act"] = False
 
             case "far":
                 match ret[1]:
@@ -483,52 +472,208 @@ while True:
                         else:
                             bts.chg_bts(ret[0], ret[1], "AM")
                     case 6:
-                        key["act"] = True  
-                        key["kys"] = ""
+                        bts.chg_bts(ret[0], ret[1], spc())
+                        bts.chg_clk(ret[0], ret[1])
                     case 7:
                         tmr[ret[0]].append({})
                         
-                        tmr[ret[0]][-1]["dte"] = (int(bts.get_bts(ret[0], 0)), int(bts.get_bts(ret[0], 1)), int(bts.get_bts(ret[0], 2)))
-                        tmr[ret[0]][-1]["tme"] = (int(bts.get_bts(ret[0], 3)), int(bts.get_bts(ret[0], 4)), bts.get_bts(ret[0], 5))
-                        tmr[ret[0]][-1]["nte"] = key["kys"]
+                        tmr[ret[0]][-1]["dte"] = [int(bts.get_bts(ret[0], 0)), int(bts.get_bts(ret[0], 1)), int(bts.get_bts(ret[0], 2))]
+                        tmr[ret[0]][-1]["tme"] = [int(bts.get_bts(ret[0], 3)), int(bts.get_bts(ret[0], 4)), bts.get_bts(ret[0], 5)]
+                        tmr[ret[0]][-1]["nte"] = bts.get_bts(ret[0], 6)
                         tmr[ret[0]][-1]["nme"] = tmr[ret[0]][-1]["nte"] + "_" + ret[0] + "_" + str(len(tmr[ret[0]]) - 1)
 
                         bts.chg_grp("mnu")
-                        key["act"] = False
                     case 8:
                         bts.chg_grp("mnu")
-                        key["act"] = False
 
             case "viw":
                 match ret[1]:
                     case 0:
                         bts.chg_grp("mnu")
                     case 1:
-                        tmr = {"tht": [""], "tod": [], "evy": [], "far": []}
+                        viw["sld"][1] = True
+                        viw["sld"][2] = True
+    
+    viw["spc"] = 0
 
+    if bts.wrk_cur["vis"] == "viw":
+        for typ in tmr:
+            for a in range(len(tmr[typ])):
+                if tmr[typ][a] != "":
+                    if typ == "tht":
+                        viw["siz"] = txt.are(tmr[typ][a], 19, (0, 2))
+
+                        if 37 + viw["spc"] + viw["siz"][1] + viw["scr"] < scn["siz"][1] - 65 and viw["spc"] + viw["scr"] > -1:
+                            viw["bld-ver"][0] = (6 - clp((scn["siz"][1] - 65) - (37 + viw["spc"] + viw["siz"][1] + viw["scr"]), max=6)) / 6
+                            viw["bld-ver"][1] = clp(6 - (viw["spc"] + viw["scr"] + 1), 0) / 6
+                            viw["bld"] = max(viw["bld-ver"])
+                            viw["box"] = ((scn["siz"][0] // 2 - viw["siz"][0] // 2 - 3, 31 + viw["spc"] + viw["scr"]), (viw["siz"][0] + 6, viw["siz"][1] + 6))
+
+                            txt.drw(tmr[typ][a], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))    
+
+                            if hit(mos_dat["xy"], viw["box"]):
+                                viw["bld"] += 0.1
+
+                                if mos_dat["btt"][0] and viw["sld"][0] == 0:
+                                    viw["sld"][1] = True
+                                    viw["del"].append((typ, a))
+                            
+                            viw["bld"] = clp(viw["bld"], max=1)
+
+                            pg.draw.rect(scn["srf"], bld_clr(hst_clr, cer_clr, viw["bld"]), pg.Rect(scn["siz"][0] // 2 - viw["siz"][0] // 2 - 3, 31 + viw["spc"] + viw["scr"], viw["siz"][0] + 6, viw["siz"][1] + 6), 1)
+                        
+                        if a == len(tmr[typ]) - 1:
+                            viw["spc"] += viw["siz"][1] + 13
+                        else:
+                            viw["spc"] += viw["siz"][1] + 12                        
+
+                    if typ == "tod":
+                        viw["siz-1"] = txt.are(tmr[typ][a]["nte"], 19, (0, 2))
+                        viw["txt-1"] = str(tmr[typ][a]["tme"][0]) + ":" + str(tmr[typ][a]["tme"][1]) + " " + str(tmr[typ][a]["tme"][2])
+
+                        viw["siz-2"] = txt.are(viw["txt-1"], 19, (0, 2))
+                        viw["siz"] = [max([viw["siz-1"][0], viw["siz-2"][0]]), viw["siz-1"][1] + viw["siz-2"][1] + 2]
+
+                        if 37 + viw["spc"] + viw["siz"][1] + viw["scr"] < scn["siz"][1] - 65 and viw["spc"] + viw["scr"] > -1:
+                            viw["bld-ver"][0] = (6 - clp((scn["siz"][1] - 65) - (37 + viw["spc"] + viw["siz"][1] + viw["scr"]), max=6)) / 6
+                            viw["bld-ver"][1] = clp(6 - (viw["spc"] + viw["scr"] + 1), 0) / 6
+                            viw["bld"] = max(viw["bld-ver"])
+                            viw["box"] = ((scn["siz"][0] // 2 - viw["siz"][0] // 2 - 3, 34 + viw["spc"] - 3 + viw["scr"]), (viw["siz"][0] + 6, viw["siz"][1] + 6))
+
+                            txt.drw(tmr[typ][a]["nte"], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))
+                            txt.drw(viw["txt-1"], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["siz-1"][1] + 2 + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))
+
+                            if hit(mos_dat["xy"], viw["box"]):
+                                viw["bld"] += 0.1
+                                
+                                if mos_dat["btt"][0] and viw["sld"][0] == 0:
+                                    viw["sld"][1] = True
+                                    viw["del"].append((typ, a))
+
+                            viw["bld"] = clp(viw["bld"], max=1)
+
+                            pg.draw.rect(scn["srf"], bld_clr(hst_clr, cer_clr, viw["bld"]), pg.Rect(scn["siz"][0] // 2 - viw["siz"][0] // 2 - 3, 34 + viw["spc"] - 3 + viw["scr"], viw["siz"][0] + 6, viw["siz"][1] + 6), 1)
+
+                        if a == len(tmr[typ]) - 1:
+                            viw["spc"] += viw["siz"][1] + 13
+                        else:
+                            viw["spc"] += viw["siz"][1] + 12                        
+                    
+                    if typ == "evy":
+                        viw["siz-1"] = txt.are(tmr[typ][a]["nte"], 19, (0, 2))
+                        viw["txt-1"] = str(tmr[typ][a]["tme"][0]) + ":" + str(tmr[typ][a]["tme"][1]) + " " + str(tmr[typ][a]["tme"][2])
+                        viw["siz-2"] = txt.are(viw["txt-1"], 19, (0, 2))
+
+                        viw["txt-2"] = ""
+
+                        for b in range(7):
+                            if tmr[typ][a]["act"][b]:
+                                viw["txt-2"] += ""
+                            else:
+                                viw["txt-2"] += ""
+                            
+                            if b < 6:
+                                viw["txt-2"] += "/"
+
+                        viw["siz-3"] = txt.are(viw["txt-2"], 19, (0, 2))
+                        viw["siz"] = (max([viw["siz-1"][0], viw["siz-2"][0], viw["siz-3"][0]]), viw["siz-1"][1] + viw["siz-2"][1] + viw["siz-3"][1] + 4)
+
+                        if 37 + viw["spc"] + viw["siz"][1] + viw["scr"] < scn["siz"][1] - 64 and viw["spc"] + viw["scr"] > -1:
+                            viw["bld-ver"][0] = (6 - clp((scn["siz"][1] - 65) - (37 + viw["spc"] + viw["siz"][1] + viw["scr"]), max=6)) / 6
+                            viw["bld-ver"][1] = clp(6 - (viw["spc"] + viw["scr"] + 1), 0) / 6
+                            viw["bld"] = max(viw["bld-ver"])
+                            viw["box"] = ((scn["siz"][0] // 2 - viw["siz"][0] // 2 - 3, 34 + viw["spc"] - 3 + viw["scr"]), (viw["siz"][0] + 6, viw["siz"][1] + 6))
+
+                            txt.drw(tmr[typ][a]["nte"], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))    
+                            txt.drw(viw["txt-1"], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["siz-1"][1] + 2 + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))    
+                            txt.drw(viw["txt-2"], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["siz-1"][1] + viw["siz-2"][1] + 4 + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))
+
+                            if hit(mos_dat["xy"], viw["box"]):
+                                viw["bld"] += 0.1
+                                
+                                if mos_dat["btt"][0] and viw["sld"][0] == 0:
+                                    viw["sld"][1] = True
+                                    viw["del"].append((typ, a))
+                            
+                            viw["bld"] = clp(viw["bld"], max=1)
+
+                            pg.draw.rect(scn["srf"], bld_clr(hst_clr, cer_clr, viw["bld"]), pg.Rect(scn["siz"][0] // 2 - viw["siz"][0] // 2 - 3, 34 + viw["spc"] - 3 + viw["scr"], viw["siz"][0] + 6, viw["siz"][1] + 6), 1)
+
+                        if a == len(tmr[typ]) - 1:
+                            viw["spc"] += viw["siz"][1] + 13
+                        else:
+                            viw["spc"] += viw["siz"][1] + 12                        
+                    
+                    if typ == "far":
+                        viw["siz-1"] = txt.are(tmr[typ][a]["nte"], 19, (0, 2))
+                        viw["txt-1"] = str(tmr[typ][a]["tme"][0]) + ":" + str(tmr[typ][a]["tme"][1]) + " " + str(tmr[typ][a]["tme"][2])
+                        viw["siz-2"] = txt.are(viw["txt-1"], 19, (0, 2))
+
+                        viw["txt-2"] = str(tmr[typ][a]["dte"][0]) + "/" + str(tmr[typ][a]["dte"][1]) + "/" + str(tmr[typ][a]["dte"][2])
+
+                        viw["siz-3"] = txt.are(viw["txt-2"], 19, (0, 2))
+                        viw["siz"] = (max([viw["siz-1"][0], viw["siz-2"][0], viw["siz-3"][0]]), viw["siz-1"][1] + viw["siz-2"][1] + viw["siz-3"][1] + 4)
+
+                        if 37 + viw["spc"] + viw["siz"][1] + viw["scr"] < scn["siz"][1] - 65 and viw["spc"] + viw["scr"] > -1:
+                            viw["bld-ver"][0] = (6 - clp((scn["siz"][1] - 65) - (37 + viw["spc"] + viw["siz"][1] + viw["scr"]), max=6)) / 6
+                            viw["bld-ver"][1] = clp(6 - (viw["spc"] + viw["scr"] + 1), 0) / 6
+                            viw["bld"] = max(viw["bld-ver"])
+                            viw["box"] = ((scn["siz"][0] // 2 - viw["siz"][0] // 2 - 3, 34 + viw["spc"] - 3 + viw["scr"]), (viw["siz"][0] + 6, viw["siz"][1] + 6))
+
+                            txt.drw(tmr[typ][a]["nte"], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))    
+                            txt.drw(viw["txt-1"], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["siz-1"][1] + 2 + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))    
+                            txt.drw(viw["txt-2"], (scn["siz"][0] // 2, 34 + viw["spc"] + viw["siz-1"][1] + viw["siz-2"][1] + 4 + viw["scr"]), 19, bld_clr(bck_clr, cer_clr, viw["bld"]), (0, 2), bld_clr(hst_clr, cer_clr, viw["bld"]), (True, False))
+
+                            if hit(mos_dat["xy"], viw["box"]):
+                                viw["bld"] += 0.1
+                                
+                                if mos_dat["btt"][0] and viw["sld"][0] == 0:
+                                    viw["sld"][1] = True
+                                    viw["del"].append((typ, a))
+
+                            pg.draw.rect(scn["srf"], bld_clr(hst_clr, cer_clr, viw["bld"]), pg.Rect(scn["siz"][0] // 2 - viw["siz"][0] // 2 - 3, 34 + viw["spc"] - 3 + viw["scr"], viw["siz"][0] + 6, viw["siz"][1] + 6), 1)
+
+                        if a == len(tmr[typ]) - 1:
+                            viw["spc"] += viw["siz"][1] + 13
+                        else:
+                            viw["spc"] += viw["siz"][1] + 12
+            
+        if viw["sld"][1]:
+            if viw["sld"][2]:
+                viw["sld"][0] = lrp(viw["sld"][0], 1, tot_lrp, tme_cal["dlt"], tot_inc)
+
+                if round(viw["sld"][0], 2) >= 0.99:
+                    tmr = {"tht": [""], "tod": [], "evy": [], "far": []} 
+                if viw["sld"][0] == 1:
+                    viw["sld"][2] = False
+                    viw["sld"][1] = False
+                    viw["sld"][0] = 0
+            else:
+                if viw["sld"][3]:
+                    viw["sld"][0] = lrp(viw["sld"][0], 0, tot_lrp, tme_cal["dlt"], tot_inc)
+
+                    if viw["sld"][0] == 0:
+                        viw["sld"][3] = False
+                        viw["sld"][1] = False
+                else:
+                    viw["sld"][0] = lrp(viw["sld"][0], 1, tot_lrp, tme_cal["dlt"], tot_inc)
+                
+                if round(viw["sld"][0], 2) >= 0.99:
+                    try:
+                        for a in range(len(viw["del"])):
+                            tmr[viw["del"][a][0]].pop(viw["del"][a][1])
+                            viw["del"].pop(a)
+                    except:
+                        continue
+
+                if viw["sld"][0] == 1:
+                    viw["sld"][3] = True
+
+        pg.draw.rect(scn["srf"], clr["white"], pg.Rect(0, 31, scn["siz"][0] * max([bts.wrk_grp_s["viw"]["sld"], viw["sld"][0]]), scn["siz"][1] - 97))
+    
     pg.draw.rect(scn["srf"], clr["green"], pg.Rect(mos_dat["xy"][0] - 3, mos_dat["xy"][1] - 3, 6, 6))
 
     txt.drw("Alzhe Timer", (scn["siz"][0] // 2, 2), 26, hst_clr, (0, 2), bck_clr, (True, False))
-
-    if key["act"]:
-        match bts.get_grp():
-            case "tht":
-                bts.chg_hgh(bts.get_grp(), 0, True)
-                bts.chg_bts(bts.get_grp(), 0, key["kys"])
-            case "tod":
-                bts.chg_hgh(bts.get_grp(), 3, True)
-                bts.chg_bts(bts.get_grp(), 3, key["kys"])                
-            case "evy":
-                bts.chg_hgh(bts.get_grp(), 10, True)
-                bts.chg_bts(bts.get_grp(), 10, key["kys"])
-            case "far":
-                bts.chg_hgh(bts.get_grp(), 6, True)
-                bts.chg_bts(bts.get_grp(), 6, key["kys"])
-    else:
-        bts.chg_hgh("tht", 0, False)
-        bts.chg_hgh("tod", 3, False)
-        bts.chg_hgh("evy", 10, False)
-        bts.chg_hgh("far", 6, False)
 
     for evt in pg.event.get():
         if evt.type == pg.QUIT:
@@ -538,26 +683,7 @@ while True:
             pg.quit()
             ext()
 
-        if evt.type == pg.KEYDOWN:
-            if key["act"]:
-                key["kys"] += evt.unicode
-
-                if evt.key == pg.K_BACKSPACE:
-                    key["kys"] = key["kys"][:-2]
-                if evt.key == pg.K_RETURN:
-                    key["act"] = False
-                    key["kys"] = key["kys"][:-1]
-                
-                match bts.get_grp():
-                    case "tht":
-                        bts.chg_clk(bts.get_grp(), 0)
-                    case "tod":
-                        bts.chg_clk(bts.get_grp(), 3)
-                    case "evy":
-                        bts.chg_clk(bts.get_grp(), 10)
-                    case "far":
-                        bts.chg_clk(bts.get_grp(), 6)
-                
+        if evt.type == pg.KEYDOWN:                
             if evt.key == pg.K_ESCAPE:
                 with open("eng/dat/tmr.json", "w") as f:
                     dmp(tmr, f)
@@ -581,6 +707,9 @@ while True:
         mos_dat["chg"][0].pop(0)
     if len(mos_dat["chg"][0]) == 2:
         mos_dat["chg"][1] = (mos_dat["chg"][0][1] - mos_dat["chg"][0][0]) * -1
+
+    if mos_dat["btt"][0] and bts.wrk_cur["cur"] == "viw" and bts.wrk_grp_s["viw"]["sld"] == 0:
+        viw["scr"] -= mos_dat["chg"][1]
 
     scn["win"] = pg.transform.scale(scn["srf"], siz)
     scn["win-bck"] = pg.transform.scale(scn["srf"], siz)

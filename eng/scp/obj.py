@@ -15,8 +15,8 @@ class wrk:
         self.wrk_txt_siz = 22
         self.wrk_txt_spc = 2
 
-        self.wrk_lrp = 0.2
-        self.wrk_inc = 0.0075
+        tot_lrp = 0.2
+        tot_inc = 0.0075
 
         self.wrk_grp_s = {}
         self.wrk_bts = {}
@@ -197,9 +197,9 @@ class wrk:
         self.bld_xy = bld_xy
 
         if self.hov(self.bld_grp, self.bld_id, self.bld_xy) or self.wrk_bts[self.bld_grp][self.bld_id]["hgh"]:
-            self.wrk_bts[self.bld_grp][self.bld_id]["lrp"] = lrp(self.wrk_bts[self.bld_grp][self.bld_id]["lrp"], 1, self.wrk_lrp, self.bld_dlt, self.wrk_inc)
+            self.wrk_bts[self.bld_grp][self.bld_id]["lrp"] = lrp(self.wrk_bts[self.bld_grp][self.bld_id]["lrp"], 1, tot_lrp, self.bld_dlt, tot_inc)
         else:
-            self.wrk_bts[self.bld_grp][self.bld_id]["lrp"] = lrp(self.wrk_bts[self.bld_grp][self.bld_id]["lrp"], 0, self.wrk_lrp, self.bld_dlt, self.wrk_inc)
+            self.wrk_bts[self.bld_grp][self.bld_id]["lrp"] = lrp(self.wrk_bts[self.bld_grp][self.bld_id]["lrp"], 0, tot_lrp, self.bld_dlt, tot_inc)
     
     def fix(self, fix_xy, fix_btt, fix_dlt):
         self.fix_xy = fix_xy
@@ -216,7 +216,7 @@ class wrk:
                     self.wrk_bts[grp][id]["btt"] = 1
                     self.fix_btt_dat = (grp, id)
                 else:
-                    self.wrk_bts[grp][id]["btt"] = lrp(self.wrk_bts[grp][id]["btt"], 0, self.wrk_lrp, self.fix_dlt, self.wrk_inc)
+                    self.wrk_bts[grp][id]["btt"] = lrp(self.wrk_bts[grp][id]["btt"], 0, tot_lrp, self.fix_dlt, tot_inc)
         
         return self.fix_btt_dat
     
@@ -225,7 +225,7 @@ class wrk:
 
         if self.wrk_cur["vis"] != self.wrk_cur["cur"]:
             if self.wrk_grp_s[self.wrk_cur["vis"]]["shw"]:
-                self.wrk_grp_s[self.wrk_cur["vis"]]["sld"] = lrp(self.wrk_grp_s[self.wrk_cur["vis"]]["sld"], 1, self.wrk_lrp, self.bld_dlt, self.wrk_inc)
+                self.wrk_grp_s[self.wrk_cur["vis"]]["sld"] = lrp(self.wrk_grp_s[self.wrk_cur["vis"]]["sld"], 1, tot_lrp, self.bld_dlt, tot_inc)
 
                 if self.wrk_grp_s[self.wrk_cur["vis"]]["sld"] == 1:
                     self.wrk_grp_s[self.wrk_cur["vis"]]["shw"] = False
@@ -233,7 +233,7 @@ class wrk:
                     self.wrk_cur["vis"] = self.wrk_cur["cur"]
         else:
             if self.wrk_grp_s[self.wrk_cur["vis"]]["sld"] != 0:
-                self.wrk_grp_s[self.wrk_cur["vis"]]["sld"] = lrp(self.wrk_grp_s[self.wrk_cur["vis"]]["sld"], 0, self.wrk_lrp, self.bld_dlt, self.wrk_inc)
+                self.wrk_grp_s[self.wrk_cur["vis"]]["sld"] = lrp(self.wrk_grp_s[self.wrk_cur["vis"]]["sld"], 0, tot_lrp, self.bld_dlt, tot_inc)
 
     def drw(self):
         for grp in self.wrk_bts:
