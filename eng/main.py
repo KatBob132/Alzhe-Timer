@@ -671,7 +671,8 @@ while True:
 
         pg.draw.rect(scn["srf"], clr["white"], pg.Rect(0, 31, scn["siz"][0] * max([bts.wrk_grp_s["viw"]["sld"], viw["sld"][0]]), scn["siz"][1] - 97))
     
-    pg.draw.rect(scn["srf"], clr["green"], pg.Rect(mos_dat["xy"][0] - 3, mos_dat["xy"][1] - 3, 6, 6))
+    pg.draw.rect(scn["srf"], clr["black"], pg.Rect(mos_dat["xy"][0] - 3, mos_dat["xy"][1] - 3, 6, 6))
+    pg.draw.rect(scn["srf"], clr["white"], pg.Rect(mos_dat["xy"][0] - 3, mos_dat["xy"][1] - 3, 6, 6), 1)
 
     txt.drw("Alzhe Timer", (scn["siz"][0] // 2, 2), 26, hst_clr, (0, 2), bck_clr, (True, False))
 
